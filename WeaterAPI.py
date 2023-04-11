@@ -13,7 +13,6 @@ def create_database():
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+"final.database")
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS Weather_data")
     cur.execute('''CREATE TABLE IF NOT EXISTS weather_data (
                  date TEXT,
                  max_temp FLOAT,
@@ -58,14 +57,24 @@ def main():
     # Location and date range for the weather data
     location = 'New York'
     start_date = datetime(2022, 5, 1)
-    end_date = datetime(2022, 8, 31)
-    add_days = timedelta(days=31)
+    end_date = datetime(2022, 8, 9)
+    #add_days = timedelta(days=31)
+   
+    
 
     cur, conn = create_database()
-    while start_date <= end_date:
-        data = get_weather_api(key,location, start_date,end_date)
-        weather_data_table(cur, conn, data)
-        start_date += add_days
+    dates = []
+    while len(dates) < 100:
+        print('inside while loop')
+        end_date = start_date + timedelta(days = 25)
+        if end_date > datetime(2022, 8, 9):
+            end_date = datetime(2022,8,9)
+        if end_date not in dates:
+            dates.append(end_date)
+            print(f"Processing weather data for {start_date} to {end_date}")
+            data = get_weather_api(key,location, start_date, end_date)
+            weather_data_table(cur, conn,data)
+        start_date = end_date + timedelta(days=1)
     conn.close()
 
 if __name__ == "__main__":
