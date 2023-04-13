@@ -14,8 +14,9 @@ def create_database():
     conn = sqlite3.connect(path+'/'+"final.database")
     cur = conn.cursor()
     #cur.execute("DROP TABLE IF EXISTS weather_data")
+    cur.execute("CREATE TABLE IF NOT EXISTS dates (id INTEGER, date TEXT)")
     cur.execute('''CREATE TABLE IF NOT EXISTS weather_data (
-                 date TEXT PRIMARY KEY,
+                 id INTEGER PRIMARY KEY,
                  max_temp FLOAT,
                  min_temp FLOAT,
                  avg_temp FLOAT,
@@ -32,13 +33,16 @@ def get_weather_api(key, location, start_date, end_date):
     response = requests.get(url)
     data = response.text
     j_dict = json.loads(data)
+    
     return j_dict
 
 def weather_data_table(cur, conn, data):
     count = 0
+    id = 0
     if data == []:
         return None
     for day in data['forecast']['forecastday']:
+        id += 1
         date = day['date']
         max_temp = day['day']['maxtemp_f']
         min_temp = day['day']['mintemp_f']
@@ -47,9 +51,11 @@ def weather_data_table(cur, conn, data):
         precip = day['day']['totalprecip_in']
         condition = day['day']['condition']['text']
 
+        cur.execute("INSERT OR IGNORE INTO dates (id, date) VALUES (?,?)",(id, date))
+
 
         # Check if a row already exists with the same date
-        cur.execute("SELECT COUNT(*) FROM weather_data WHERE date=?", (date,))
+        cur.execute("SELECT COUNT(*) FROM weather_data WHERE id=?", (id,))
         if cur.fetchone()[0] == 0:
             if count == 25:
                 break
@@ -57,10 +63,10 @@ def weather_data_table(cur, conn, data):
     
         # Insert the data into the database table
             cur.execute('''INSERT OR IGNORE INTO weather_data (
-                date, max_temp, min_temp, avg_temp, max_wind, precip, condition) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)''', 
-                (date, max_temp, min_temp, avg_temp, max_wind, precip, condition))
-
+                id, max_temp, min_temp, avg_temp, max_wind, precip, condition) 
+                VALUES (?,?, ?, ?, ?, ?, ?)''', 
+                (id, max_temp, min_temp, avg_temp, max_wind, precip, condition))
+            
     conn.commit()
     
 
