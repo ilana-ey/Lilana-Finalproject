@@ -1,0 +1,5 @@
+The average temperature for each month from May 1, 2022 to August 31, 2022:
+05 is 62.97°F.
+06 is 71.18°F.
+07 is 80.00°F.
+08 is 78.98°F.

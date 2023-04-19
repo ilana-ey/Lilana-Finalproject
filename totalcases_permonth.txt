@@ -1,0 +1,5 @@
+The total cases for each month from May 1, 2022 to August 31, 2022 Month:
+05, Total Cases: 5896.099999999999
+06, Total Cases: 6690.900000000001
+07, Total Cases: 7462.7
+08, Total Cases: 6611.400000000001

@@ -1,0 +1,20 @@
+Average weekly Covid admissions for each week from May 1, 2022 to August 31, 2022:
+Week 17: 4.70
+Week 18: 5.29
+Week 19: 6.17
+Week 20: 7.36
+Week 21: 8.03
+Week 22: 8.64
+Week 23: 9.01
+Week 24: 9.37
+Week 25: 9.81
+Week 26: 10.87
+Week 27: 11.66
+Week 28: 13.06
+Week 29: 13.70
+Week 30: 13.81
+Week 31: 13.36
+Week 32: 12.99
+Week 33: 12.14
+Week 34: 11.46
+Week 35: 11.07

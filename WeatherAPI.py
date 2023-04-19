@@ -4,7 +4,7 @@ import requests
 import json
 import sqlite3
 from datetime import datetime, timedelta
-from dateutil import parser
+
 
 # Task 1:
 
@@ -87,6 +87,56 @@ def weather_data_table(cur, conn, data, id):
     return data
 
 
+#CALCULATIONS 
+
+def calculate_average_temperatures(cur):
+    cur.execute("SELECT strftime('%m', dates.date) as month, AVG(avg_temp) as avg_temp FROM weather_data JOIN dates ON weather_data.id = dates.id GROUP BY month")
+    rows = cur.fetchall()
+    full_path = os.path.join(os.path.dirname(__file__), 'averagetemp.txt')
+    file = open(full_path,'w')
+    file.write("The average temperature for each month from May 1, 2022 to August 31, 2022:\n")
+    for row in rows:
+        month = row[0]
+        avg_temp = row[1]
+        file.write(f'{month} is {avg_temp:.2f}°F.\n')
+    file.close()
+
+    
+    
+
+def calculate_most_common_condition_per_week(cur):
+    cur.execute("""SELECT strftime('%W', dates.date) as week, 
+                   weather_data.condition, COUNT(*) as count 
+                   FROM weather_data 
+                   JOIN dates ON weather_data.id = dates.id 
+                   GROUP BY week, weather_data.condition 
+                   ORDER BY week, count DESC""")
+    rows = cur.fetchall()
+    results = {}
+
+    for row in rows:
+        week = row[0]
+        condition = row[1]
+        count = row[2]
+        
+        if week not in results:
+            results[week] = []
+        
+        results[week].append((condition, count))
+    
+    most_common_conditions = {}
+    for week, conditions in results.items():
+        most_common_conditions[week] = max(conditions, key=lambda x: x[1])[0]
+    
+    full_path = os.path.join(os.path.dirname(__file__), 'weekly_conditions.txt')
+    file = open(full_path,'w')
+    file.write("The conditions for each week from May 1, 2022 to August 31, 2022 with the first week as the 17th week of the year:\n")
+    file.write(f'{most_common_conditions}')
+    file.close()
+
+    
+
+
 def main():
     # API key for accessing the WeatherAPI
     key = "339838be60e74f79a30210717230904"
@@ -120,6 +170,8 @@ def main():
     rows = cur.fetchone()[0]
     print(rows)
   
+    calculate_average_temperatures(cur)
+    calculate_most_common_condition_per_week(cur)
     conn.close()
 
 

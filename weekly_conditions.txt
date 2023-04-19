@@ -1,0 +1,2 @@
+The conditions for each week from May 1, 2022 to August 31, 2022 with the first week as the 17th week of the year:
+{'17': 'Cloudy', '18': 'Heavy rain at times', '19': 'Sunny', '20': 'Partly cloudy', '21': 'Partly cloudy', '22': 'Sunny', '23': 'Patchy rain possible', '24': 'Overcast', '25': 'Patchy rain possible', '26': 'Sunny', '27': 'Sunny', '28': 'Sunny', '29': 'Sunny', '30': 'Sunny', '31': 'Patchy rain possible', '32': 'Patchy rain possible', '33': 'Partly cloudy', '34': 'Moderate or heavy rain shower', '35': 'Patchy rain possible'}
