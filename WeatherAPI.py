@@ -1,5 +1,3 @@
-
-
 # Imports
 import os
 import requests
