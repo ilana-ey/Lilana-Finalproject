@@ -36,10 +36,11 @@ def get_covid_data(api_key):
     for date in j_dict["metricsTimeseries"]:
         if date["date"][5:7] == "05" or date["date"][5:7] == "06" or date["date"][5:7] == "07" or date["date"][5:7] == "08":
             covid_dict[date["date"]] = date
+    print(covid_dict)
     return covid_dict
 
 
-def insert_covid_data(cur, conn, covid_dict, id):
+def insert_covid_data(cur, conn, covid_dict):
     count = 0
     if covid_dict == []:
         return None
@@ -130,7 +131,7 @@ def main():
     covid_dict = get_covid_data(api_key)
     if start_date > end_date:
         covid_dict = []
-    insert_covid_data(cur, conn, covid_dict, 1)
+    insert_covid_data(cur, conn, covid_dict)
 
      
     cur.execute("SELECT COUNT(*) FROM covid_data")
