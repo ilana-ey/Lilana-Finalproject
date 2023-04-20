@@ -38,41 +38,6 @@ def get_covid_data(api_key):
             covid_dict[date["date"]] = date
     return covid_dict
 
-#CALCULATIONS#
-
-def calculate_total_cases(cur):
-    cur.execute("SELECT strftime('%m', dates.date) as month, SUM(covid_data.weekly_new_cases) as total_cases FROM covid_data JOIN dates ON covid_data.id=dates.id WHERE dates.date BETWEEN '2022-05-01' AND '2022-08-31' GROUP BY month")
-    rows = cur.fetchall()
-    full_path = os.path.join(os.path.dirname(__file__), 'totalcases_permonth.txt')
-    file = open(full_path,'w')
-    file.write("The total cases for each month from May 1, 2022 to August 31, 2022 Month:\n")
-    for row in rows:
-        file.write(f"{row[0]}, Total Cases: {row[1]}\n")
-    file.close()
-
-def calculate_avg_weekly_covid_admissions(cur):
-    # Query the database for the average weekly covid admissions for each week
-    cur.execute("""
-        SELECT strftime('%W', dates.date) AS week, AVG(covid_data.weekly_covid_admissions) AS avg_weekly_covid_admissions
-        FROM dates
-        INNER JOIN covid_data ON dates.id = covid_data.id
-        WHERE dates.date BETWEEN '2022-05-01' AND '2022-08-31'
-        GROUP BY week
-        ORDER BY week ASC
-    """)
-    weekly_covid_admissions = cur.fetchall()
-    full_path = os.path.join(os.path.dirname(__file__), 'weekly_admissions.txt')
-    file = open(full_path,'w')
-
-    
-    # Print the results
-    file.write("Average weekly Covid admissions for each week from May 1, 2022 to August 31, 2022:\n")
-    for week, avg in weekly_covid_admissions:
-        file.write(f"Week {week}: {avg:.2f}\n")
-    file.close()
-
-    
-
 
 def insert_covid_data(cur, conn, covid_dict, id):
     count = 0
@@ -114,6 +79,40 @@ def insert_covid_data(cur, conn, covid_dict, id):
     conn.commit()
  
 
+#CALCULATIONS#
+
+def calculate_total_cases(cur):
+    cur.execute("SELECT strftime('%m', dates.date) as month, SUM(covid_data.weekly_new_cases) as total_cases FROM covid_data JOIN dates ON covid_data.id=dates.id WHERE dates.date BETWEEN '2022-05-01' AND '2022-08-31' GROUP BY month")
+    rows = cur.fetchall()
+    full_path = os.path.join(os.path.dirname(__file__), 'totalcases.txt')
+    file = open(full_path,'w')
+    file.write("The total cases for each month from May 1, 2022 to August 31, 2022 Month:\n")
+    for row in rows:
+        file.write(f"{row[0]}, Total Cases: {row[1]}\n")
+    file.close()
+
+def calculate_avg_weekly_covid_admissions(cur):
+    # Query the database for the average weekly covid admissions for each week
+    cur.execute("""
+        SELECT strftime('%W', dates.date) AS week, AVG(covid_data.weekly_covid_admissions) AS avg_weekly_covid_admissions
+        FROM dates
+        INNER JOIN covid_data ON dates.id = covid_data.id
+        WHERE dates.date BETWEEN '2022-05-01' AND '2022-08-31'
+        GROUP BY week
+        ORDER BY week ASC
+    """)
+    weekly_covid_admissions = cur.fetchall()
+    full_path = os.path.join(os.path.dirname(__file__), 'weekly_admissions.txt')
+    file = open(full_path,'w')
+
+    
+    # Print the results
+    file.write("Average weekly Covid admissions for each week from May 1, 2022 to August 31, 2022:\n")
+    for week, avg in weekly_covid_admissions:
+        file.write(f"Week {week}: {avg:.2f}\n")
+    file.close()
+
+    
 
 
 def main():
